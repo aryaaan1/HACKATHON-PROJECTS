@@ -132,6 +132,83 @@ def test_get_order(setup_db):
     assert len(order["items"]) > 0
     assert order["items"][0]["location"] is not None
 
+def test_create_order(setup_db):
+    response = client.post(
+        "/api/orders",
+        json={
+            "order_number": "ORD-NEW-001",
+            "items": [
+                {"product_id": 1, "ordered_quantity": 3},
+                {"product_id": 2, "ordered_quantity": 1},
+            ],
+        },
+    )
+    assert response.status_code == 201
+    data = response.json()
+    assert data["status"] == "success"
+    assert data["order_number"] == "ORD-NEW-001"
+
+def test_create_order_is_retrievable(setup_db):
+    client.post(
+        "/api/orders",
+        json={
+            "order_number": "ORD-NEW-002",
+            "items": [{"product_id": 1, "ordered_quantity": 5}],
+        },
+    )
+
+    response = client.get("/api/orders/ORD-NEW-002")
+    assert response.status_code == 200
+    order = response.json()
+    assert order["order_number"] == "ORD-NEW-002"
+    assert order["status"] == "pending"
+    assert len(order["items"]) == 1
+    assert order["items"][0]["ordered_quantity"] == 5
+
+def test_create_order_does_not_change_inventory(setup_db):
+    before = client.get("/api/products/1").json()
+    before_qty = sum(loc["quantity"] for loc in before["locations"])
+
+    client.post(
+        "/api/orders",
+        json={
+            "order_number": "ORD-NEW-003",
+            "items": [{"product_id": 1, "ordered_quantity": 5}],
+        },
+    )
+
+    after = client.get("/api/products/1").json()
+    after_qty = sum(loc["quantity"] for loc in after["locations"])
+    assert after_qty == before_qty
+
+def test_create_order_duplicate_number(setup_db):
+    response = client.post(
+        "/api/orders",
+        json={
+            "order_number": "ORD-001",
+            "items": [{"product_id": 1, "ordered_quantity": 1}],
+        },
+    )
+    assert response.status_code == 409
+
+def test_create_order_invalid_product(setup_db):
+    response = client.post(
+        "/api/orders",
+        json={
+            "order_number": "ORD-NEW-004",
+            "items": [{"product_id": 9999, "ordered_quantity": 1}],
+        },
+    )
+    assert response.status_code == 400
+    assert "Invalid product_id" in response.json()["detail"]
+
+def test_create_order_empty_items(setup_db):
+    response = client.post(
+        "/api/orders",
+        json={"order_number": "ORD-NEW-005", "items": []},
+    )
+    assert response.status_code == 400
+
 def test_stock_inward(setup_db):
     response = client.post(
         "/api/stock/inward",

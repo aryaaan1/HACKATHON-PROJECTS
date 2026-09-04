@@ -55,6 +55,10 @@ class OrderItemRequest(BaseModel):
     product_id: int
     ordered_quantity: int
 
+class OrderCreateRequest(BaseModel):
+    order_number: str
+    items: List[OrderItemRequest]
+
 class OrderResponse(BaseModel):
     id: int
     order_number: str

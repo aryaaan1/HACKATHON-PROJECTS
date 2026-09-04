@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.database import init_db
@@ -5,9 +6,17 @@ from backend.routes import dashboard, products, locations, orders, stock
 
 app = FastAPI(title="Inventory Management System")
 
+# FRONTEND_ORIGIN can be a single origin or a comma-separated list
+# (e.g. "https://app.vercel.app,http://localhost:5173").
+FRONTEND_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("FRONTEND_ORIGIN", "http://localhost:5173").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
