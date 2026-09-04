@@ -5,11 +5,10 @@ const RETRY_DELAY_MS = 3000;
 
 async function ping() {
   try {
-    // /health is intentionally unauthenticated (unlike /api/dashboard, which
-    // now requires login) so this check still works on the Login screen and
-    // for expired sessions, and so Render's own platform health check keeps
-    // working regardless of auth.
-    const res = await fetch(`${API_BASE_URL}/health`);
+    // Uses the same endpoint the rest of the app already depends on, so the
+    // status indicator reflects whether real app traffic actually succeeds
+    // rather than a separate /health path that can behave differently.
+    const res = await fetch(`${API_BASE_URL}/api/dashboard`);
     return res.ok;
   } catch {
     return false;

@@ -1,11 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { visibleNavItems, NavIcon } from './navItems';
-import { useAuth } from '../../context/AuthContext';
+import { NAV_ITEMS, NavIcon } from './navItems';
 
 export default function Sidebar() {
-  const { isAdmin, username, role, logout } = useAuth();
-  const items = visibleNavItems(isAdmin);
-
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
       <div className="flex h-16 items-center gap-2 border-b border-slate-200 px-5">
@@ -18,7 +14,7 @@ export default function Sidebar() {
         </div>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {items.map((item) => (
+        {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -36,20 +32,8 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="border-t border-slate-200 px-5 py-3">
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <p className="truncate text-xs font-semibold text-slate-700">{username}</p>
-            <p className="text-[11px] capitalize text-slate-400">{role}</p>
-          </div>
-          <button
-            type="button"
-            onClick={logout}
-            className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[11px] font-medium text-slate-500 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
-          >
-            Log out
-          </button>
-        </div>
+      <div className="border-t border-slate-200 px-5 py-4 text-[11px] text-slate-400">
+        Main Warehouse
       </div>
     </aside>
   );

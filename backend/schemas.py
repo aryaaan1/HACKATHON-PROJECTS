@@ -2,20 +2,6 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List
 
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-
-class LoginResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-    username: str
-    role: str
-
-class MeResponse(BaseModel):
-    username: str
-    role: str
-
 class ProductBase(BaseModel):
     sku: str
     name: str

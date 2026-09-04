@@ -1,25 +1,17 @@
 // Single source of truth for primary navigation, shared by the desktop
 // Sidebar, the mobile bottom nav, and the mobile "More" menu.
-// This list only controls what's *shown* — the backend independently
-// enforces which roles can actually call each admin endpoint.
 export const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: 'grid', end: true },
   { to: '/trace-order', label: 'Trace Order', shortLabel: 'Orders', icon: 'search' },
   { to: '/inventory', label: 'Inventory', icon: 'box' },
   { to: '/warehouse', label: 'Warehouse', icon: 'building' },
   { to: '/movements', label: 'Stock Movements', shortLabel: 'Movements', icon: 'swap' },
-  { to: '/admin', label: 'Admin', icon: 'settings', adminOnly: true },
+  { to: '/admin', label: 'Admin', icon: 'settings' },
 ];
 
-export function visibleNavItems(isAdmin) {
-  return NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin);
-}
-
 // The bottom nav only has room for ~4 destinations plus a "More" overflow.
-export function mobileNavGroups(isAdmin) {
-  const items = visibleNavItems(isAdmin);
-  return { primary: items.slice(0, 4), overflow: items.slice(4) };
-}
+export const PRIMARY_MOBILE_NAV = NAV_ITEMS.slice(0, 4);
+export const OVERFLOW_MOBILE_NAV = NAV_ITEMS.slice(4);
 
 export const NAV_ICON_PATHS = {
   grid: 'M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z',

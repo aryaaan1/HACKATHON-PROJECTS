@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.auth import get_current_user, CurrentUser
 from backend.database import get_db
 from backend.models import Inventory
 from backend.schemas import LocationResponse
@@ -8,7 +7,7 @@ from backend.schemas import LocationResponse
 router = APIRouter(prefix="/api", tags=["locations"])
 
 @router.get("/locations", response_model=list[LocationResponse])
-def get_locations(db: Session = Depends(get_db), current_user: CurrentUser = Depends(get_current_user)):
+def get_locations(db: Session = Depends(get_db)):
     inventories = db.query(Inventory).filter(Inventory.quantity > 0).all()
 
     locations = []

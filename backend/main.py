@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.seed_data import seed_if_empty
-from backend.routes import dashboard, products, locations, orders, stock, auth
+from backend.routes import dashboard, products, locations, orders, stock
 
 app = FastAPI(title="Inventory Management System")
 
@@ -22,7 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router)
 app.include_router(dashboard.router)
 app.include_router(products.router)
 app.include_router(locations.router)

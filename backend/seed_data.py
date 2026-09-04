@@ -12,29 +12,10 @@ every subsequent call (e.g. a Render Free restart).
 import random
 from datetime import datetime, timedelta
 
-from backend.auth import hash_password
 from backend.database import SessionLocal, init_db
 from backend.models import (
-    Warehouse, Row, Bin, Product, Inventory, Order, OrderItem, StockMovement, User
+    Warehouse, Row, Bin, Product, Inventory, Order, OrderItem, StockMovement
 )
-
-DEMO_USERS = [
-    ("admin", "Admin@123", "admin"),
-    ("employee", "Employee@123", "employee"),
-]
-
-
-def ensure_demo_users(db):
-    """Create the demo accounts if they don't exist yet. Idempotent and safe
-    to call on every startup, including against an already-seeded database —
-    it never touches an existing user's password or role."""
-    changed = False
-    for username, password, role in DEMO_USERS:
-        if not db.query(User).filter(User.username == username).first():
-            db.add(User(username=username, password_hash=hash_password(password), role=role))
-            changed = True
-    if changed:
-        db.commit()
 
 
 def populate_demo_data(db):
@@ -192,7 +173,6 @@ def seed_if_empty():
     init_db()
     db = SessionLocal()
     try:
-        ensure_demo_users(db)
         if db.query(Warehouse).count() > 0:
             return
         populate_demo_data(db)
