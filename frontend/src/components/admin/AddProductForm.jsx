@@ -43,7 +43,7 @@ export default function AddProductForm() {
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-lg bg-brand-500 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-50"
+            className="min-h-[48px] w-full rounded-lg bg-brand-500 px-5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 disabled:opacity-50 sm:w-auto"
           >
             {submitting ? 'Submitting...' : 'Add Product'}
           </button>

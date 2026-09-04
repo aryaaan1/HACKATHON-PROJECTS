@@ -1,11 +1,12 @@
 export default function ErrorState({ message, onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-red-200 bg-red-50 py-12 px-6 text-center">
+    <div role="alert" className="flex flex-col items-center justify-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-8 text-center sm:py-12 sm:px-6">
       <svg
         className="h-8 w-8 text-red-500"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -20,7 +21,7 @@ export default function ErrorState({ message, onRetry }) {
       {onRetry && (
         <button
           onClick={onRetry}
-          className="rounded-md bg-red-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-red-700"
+          className="min-h-[40px] rounded-md bg-red-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
         >
           Try again
         </button>

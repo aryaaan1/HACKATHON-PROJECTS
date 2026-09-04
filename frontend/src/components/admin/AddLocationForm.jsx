@@ -42,13 +42,13 @@ export default function AddLocationForm() {
 
   return (
     <div>
-      <div className="mb-4 flex overflow-hidden rounded-lg border border-slate-200 w-fit">
+      <div className="mb-4 flex overflow-hidden rounded-lg border border-slate-200">
         {LEVELS.map((l) => (
           <button
             key={l.key}
             type="button"
             onClick={() => { setLevel(l.key); setResult(null); }}
-            className={`px-4 py-2 text-xs font-medium transition-colors ${
+            className={`min-h-[40px] flex-1 px-4 py-2 text-xs font-medium transition-colors sm:flex-none ${
               level === l.key ? 'bg-brand-500 text-white' : 'bg-white text-slate-500 hover:bg-slate-50'
             }`}
           >
@@ -87,7 +87,7 @@ export default function AddLocationForm() {
           <button
             type="submit"
             disabled={submitting}
-            className="rounded-lg bg-brand-500 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-50"
+            className="min-h-[48px] w-full rounded-lg bg-brand-500 px-5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 disabled:opacity-50 sm:w-auto"
           >
             {submitting ? 'Submitting...' : `Add ${LEVELS.find((l) => l.key === level).label}`}
           </button>

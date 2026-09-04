@@ -19,14 +19,39 @@ export default function Header() {
   const dotClass = online === null ? 'bg-slate-300' : online ? 'bg-status-good' : 'bg-status-critical';
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6">
-      <div>
-        <h1 className="text-lg font-semibold text-slate-900">{title}</h1>
-        {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
+    <header className="sticky top-0 z-30 shrink-0 border-b border-slate-200 bg-white pt-safe">
+      {/* Mobile: compact sticky bar */}
+      <div className="flex h-14 items-center gap-2 px-3 md:hidden">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand-500 text-xs font-bold text-white">
+          W
+        </div>
+        <h1 className="min-w-0 flex-1 truncate text-base font-semibold text-slate-900">{title}</h1>
+        <span
+          className="flex shrink-0 items-center justify-center rounded-full bg-slate-100 p-1.5"
+          role="img"
+          aria-label={statusLabel}
+          title={statusLabel}
+        >
+          {online === false ? (
+            <svg className="h-3.5 w-3.5 text-status-critical" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m0 3.75h.007v.008H12v-.008ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          ) : (
+            <span className={`block h-2.5 w-2.5 rounded-full ${dotClass}`} />
+          )}
+        </span>
       </div>
-      <div className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-500">
-        <span className={`h-2 w-2 rounded-full ${dotClass}`} />
-        {statusLabel}
+
+      {/* Desktop: spacious header */}
+      <div className="hidden h-16 items-center justify-between px-6 md:flex">
+        <div>
+          <h1 className="text-lg font-semibold text-slate-900">{title}</h1>
+          {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
+        </div>
+        <div className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-500">
+          <span className={`h-2 w-2 rounded-full ${dotClass}`} />
+          {statusLabel}
+        </div>
       </div>
     </header>
   );
