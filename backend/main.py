@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.database import init_db
+from backend.seed_data import seed_if_empty
 from backend.routes import dashboard, products, locations, orders, stock
 
 app = FastAPI(title="Inventory Management System")
@@ -30,7 +30,7 @@ app.include_router(stock.router)
 
 @app.on_event("startup")
 def startup_event():
-    init_db()
+    seed_if_empty()
 
 @app.get("/health")
 def health_check():
