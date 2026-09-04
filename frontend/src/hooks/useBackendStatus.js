@@ -5,14 +5,17 @@ const RETRY_DELAY_MS = 3000;
 
 async function ping() {
   try {
-    const res = await fetch(`${API_BASE_URL}/health`);
+    // Uses the same endpoint the rest of the app already depends on, so the
+    // status indicator reflects whether real app traffic actually succeeds
+    // rather than a separate /health path that can behave differently.
+    const res = await fetch(`${API_BASE_URL}/api/dashboard`);
     return res.ok;
   } catch {
     return false;
   }
 }
 
-// Polls the backend's /health endpoint so the UI never claims "live" falsely.
+// Polls the backend so the UI never claims "live" falsely.
 // A failed check is retried once after a short delay before flipping to
 // "unreachable" — this absorbs a slow Render free-tier cold start instead of
 // flashing offline for a backend that's still waking up.
