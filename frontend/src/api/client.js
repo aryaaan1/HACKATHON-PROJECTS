@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, AUTH_TOKEN_STORAGE_KEY } from '../config';
 
 export class ApiError extends Error {
   constructor(message, status) {
@@ -9,11 +9,15 @@ export class ApiError extends Error {
 }
 
 async function request(path, options = {}) {
+  const token = sessionStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
   let response;
   try {
     response = await fetch(`${API_BASE_URL}${path}`, {
-      headers: { 'Content-Type': 'application/json' },
       ...options,
+      headers,
     });
   } catch {
     throw new ApiError(
@@ -30,6 +34,12 @@ async function request(path, options = {}) {
     } catch {
       body = null;
     }
+  }
+
+  if (response.status === 401) {
+    // Let AuthContext clear the stored session and redirect to /login —
+    // it's the only place that knows how to do that safely from here.
+    window.dispatchEvent(new Event('auth:unauthorized'));
   }
 
   if (!response.ok) {

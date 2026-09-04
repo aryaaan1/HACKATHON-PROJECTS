@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from backend.auth import get_current_user, CurrentUser
 from backend.database import get_db
 from backend.models import Product, Inventory, StockMovement, Row
 from backend.schemas import DashboardResponse, StockMovementResponse
@@ -8,7 +9,7 @@ from backend.schemas import DashboardResponse, StockMovementResponse
 router = APIRouter(prefix="/api", tags=["dashboard"])
 
 @router.get("/dashboard", response_model=DashboardResponse)
-def get_dashboard(db: Session = Depends(get_db)):
+def get_dashboard(db: Session = Depends(get_db), current_user: CurrentUser = Depends(get_current_user)):
     total_products = db.query(func.count(Product.id)).scalar() or 0
     total_stock = db.query(func.sum(Inventory.quantity)).scalar() or 0
     low_stock_items = db.query(func.count(Inventory.id)).filter(

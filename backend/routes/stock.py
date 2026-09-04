@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from backend.auth import get_current_user, require_admin, CurrentUser
 from backend.database import get_db
 from backend.models import Inventory, StockMovement, Product
 from backend.schemas import (
@@ -10,7 +11,11 @@ from backend.schemas import (
 router = APIRouter(prefix="/api", tags=["stock"])
 
 @router.post("/stock/inward")
-def stock_inward(request: StockInwardRequest, db: Session = Depends(get_db)):
+def stock_inward(
+    request: StockInwardRequest,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_admin),
+):
     inventory = db.query(Inventory).filter(
         (Inventory.product_id == request.product_id) &
         (Inventory.bin_id == request.bin_id)
@@ -43,7 +48,11 @@ def stock_inward(request: StockInwardRequest, db: Session = Depends(get_db)):
     }
 
 @router.post("/stock/outward")
-def stock_outward(request: StockOutwardRequest, db: Session = Depends(get_db)):
+def stock_outward(
+    request: StockOutwardRequest,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_admin),
+):
     inventory = db.query(Inventory).filter(
         (Inventory.product_id == request.product_id) &
         (Inventory.bin_id == request.bin_id)
@@ -77,7 +86,11 @@ def stock_outward(request: StockOutwardRequest, db: Session = Depends(get_db)):
     }
 
 @router.post("/stock/transfer")
-def stock_transfer(request: StockTransferRequest, db: Session = Depends(get_db)):
+def stock_transfer(
+    request: StockTransferRequest,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_admin),
+):
     from_inventory = db.query(Inventory).filter(
         (Inventory.product_id == request.product_id) &
         (Inventory.bin_id == request.from_bin_id)
@@ -127,14 +140,14 @@ def stock_transfer(request: StockTransferRequest, db: Session = Depends(get_db))
     }
 
 @router.get("/stock/movements", response_model=list[StockMovementResponse])
-def get_movements(db: Session = Depends(get_db)):
+def get_movements(db: Session = Depends(get_db), current_user: CurrentUser = Depends(get_current_user)):
     movements = db.query(StockMovement).order_by(
         StockMovement.timestamp.desc()
     ).all()
     return [StockMovementResponse.from_orm(m) for m in movements]
 
 @router.get("/low-stock")
-def get_low_stock(db: Session = Depends(get_db)):
+def get_low_stock(db: Session = Depends(get_db), current_user: CurrentUser = Depends(get_current_user)):
     low_stock_items = db.query(Inventory).filter(
         Inventory.quantity <= Inventory.low_stock_threshold
     ).all()

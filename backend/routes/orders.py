@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from backend.auth import get_current_user, require_admin, CurrentUser
 from backend.database import get_db
 from backend.models import Order, OrderItem, Inventory, Product
 from backend.schemas import OrderCreateRequest
@@ -7,7 +8,11 @@ from backend.schemas import OrderCreateRequest
 router = APIRouter(prefix="/api", tags=["orders"])
 
 @router.post("/orders", status_code=201)
-def create_order(request: OrderCreateRequest, db: Session = Depends(get_db)):
+def create_order(
+    request: OrderCreateRequest,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_admin),
+):
     existing = db.query(Order).filter(Order.order_number == request.order_number).first()
     if existing:
         raise HTTPException(
@@ -50,7 +55,11 @@ def create_order(request: OrderCreateRequest, db: Session = Depends(get_db)):
     }
 
 @router.get("/orders/{order_number}")
-def get_order(order_number: str, db: Session = Depends(get_db)):
+def get_order(
+    order_number: str,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+):
     order = db.query(Order).filter(Order.order_number == order_number).first()
 
     if not order:

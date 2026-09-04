@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
+from backend.auth import get_current_user, CurrentUser
 from backend.database import get_db
 from backend.models import Product, Inventory
 from backend.schemas import ProductResponse
@@ -7,7 +8,11 @@ from backend.schemas import ProductResponse
 router = APIRouter(prefix="/api", tags=["products"])
 
 @router.get("/products", response_model=list[ProductResponse])
-def search_products(search: str = Query(None), db: Session = Depends(get_db)):
+def search_products(
+    search: str = Query(None),
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+):
     query = db.query(Product)
 
     if search:
@@ -49,7 +54,11 @@ def search_products(search: str = Query(None), db: Session = Depends(get_db)):
     return result
 
 @router.get("/products/{product_id}", response_model=ProductResponse)
-def get_product(product_id: int, db: Session = Depends(get_db)):
+def get_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+):
     product = db.query(Product).filter(Product.id == product_id).first()
 
     if not product:

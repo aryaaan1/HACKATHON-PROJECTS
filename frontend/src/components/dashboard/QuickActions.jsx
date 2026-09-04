@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const ACTIONS = [
   {
@@ -21,6 +22,7 @@ const ACTIONS = [
     to: '/admin?tab=stock&mode=inward',
     tone: 'good',
     d: 'M12 4.5v15m0 0 6-6m-6 6-6-6',
+    adminOnly: true,
   },
   {
     key: 'outward',
@@ -28,6 +30,7 @@ const ACTIONS = [
     to: '/admin?tab=stock&mode=outward',
     tone: 'warning',
     d: 'M12 19.5v-15m0 0-6 6m6-6 6 6',
+    adminOnly: true,
   },
   {
     key: 'transfer',
@@ -35,6 +38,7 @@ const ACTIONS = [
     to: '/admin?tab=stock&mode=transfer',
     tone: 'brand',
     d: 'M16.5 3.75 21 8.25m0 0L16.5 12.75M21 8.25H3M7.5 20.25 3 15.75m0 0 4.5-4.5M3 15.75h18',
+    adminOnly: true,
   },
 ];
 
@@ -46,12 +50,14 @@ const TONE_CLASSES = {
 
 export default function QuickActions() {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
+  const actions = ACTIONS.filter((action) => !action.adminOnly || isAdmin);
 
   return (
     <div>
       <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Quick actions</h2>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 sm:gap-3">
-        {ACTIONS.map((action) => (
+      <div className={`grid gap-2 sm:gap-3 ${actions.length >= 5 ? 'grid-cols-3 sm:grid-cols-5' : 'grid-cols-2'}`}>
+        {actions.map((action) => (
           <button
             key={action.key}
             type="button"
