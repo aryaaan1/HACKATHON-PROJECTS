@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+*.db
+test.db
+.env
+.venv
+env/
+venv/
+*.log
+.DS_Store
+.idea/
+*.swp
+*.swo
+sitecustomize.py
